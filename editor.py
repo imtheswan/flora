@@ -29,12 +29,8 @@ class Editor():
     
     vl = 0 # numero de saltos de linea para nueva linea
 
-    actualSubLine = [] ## indica la dirccion de la linea a editar 1.1,  2.3.4
-    writingSubline = False
-
     def __init__(s, tittle): # Ejecuta la secuencia de inicio
         s.document = stone.File(tittle)
-        s.actualSubLine.append(0)
         division()
         print("\t\t", s.document.tittle)
         division()
@@ -44,15 +40,18 @@ class Editor():
         s.editor()
 
     def editor(s): # Recibe la entrada e instrucciones
-        print('Línea: ', s.document.lineNumber)
         inp = input('>  ')
+        epos = False
         if len(inp) > 0:
-            if inp[0] == ':':
+            if(inp[0] == ':'):
                 inp = inp[1:len(inp)]
-                if inp[0] == 'e' or inp[0] == 'd': # revisar que e o d sean las primeras letras del queque
-                    ... 
                 for instruction in inp:
                     s.queque.append(instruction)
+                    if instruction != 'e':
+                        epos = True
+                if 'e' in s.queque and epos:
+                    s.queque.clear()
+
             else:
                 s.linea += inp + '\n'
             s.vl = 0
@@ -63,36 +62,36 @@ class Editor():
     def commandLine(s): # Ejecuta las instrucciones
         exit = 0
         if s.vl >= 2:
-            s.document.writeLine(s.linea, [0])
+            s.newLine()
         for command in s.queque:
             if command == 'w':
-                alquimia.guardarArchivo(s.document)
-            elif command == 'n': # nueva liena
-                s.document.writeLine(s.linea, [0])
-            elif command == 'q': # salir
+                alquimia.Alquimia(
+                    s.document.tittle, 
+                    s.document.lines, 
+                    s.document.lineNumber).writeDocument()
+            elif command == 'n':
+                s.newLine()
+            elif command == 'q':
                 exit = 1
-            elif command == 'h': # ayuda
+            elif command == 'h':
                 division()
                 instructions()
                 division()
-            elif command == 's': #sublinea
-                s.document.writeLine(s.linea, [s.document.lineNumber])
-                s.actualSubLine.append(1)
+            elif command == 's':
                 ...
             elif command == 'e':
-                ...
-            elif command == 'd':
                 ...
         s.queque.clear()
         if exit != 1:
             s.editor()
 
-### Linea
-### Sublínea con index 0 en sublineas 
-# [
-#    [linea 0
-#    [sublienas de sublinea 0]]
-#    [liena 1]
-#    [linea 2]
-# ]
+    def newLine(s):
+        s.document.writeLine(s.linea)
+        s.linea = ''
+        s.vl = 0
+        clear()
+        division()
+        print('\t\t', s.document.tittle)
+        division()
+        print(s.document)
     

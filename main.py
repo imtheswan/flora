@@ -1,4 +1,4 @@
-import stone
+import alquimia
 import editor
 
 def bienvenida():
@@ -10,9 +10,10 @@ def menu():
     print('''
 1] Crear nuevo archivo
 2] Editar archivo
-3] Visualizar archivo
-4] Eliminar Archivo
-5] Para salir
+3] Listar archivos
+4] Visualizar archivo
+5] Eliminar archivo
+6] Para salir
 ''')
 
 bienvenida()
@@ -29,10 +30,12 @@ while True:
     elif en == '2':
         ...
     elif en == '3':
-        ...
-    elif en == '4':
-        ...
+        alquimia.Alquimia.listDocuments(alquimia.Alquimia)
+    elif en =='4':
+        alquimia.Alquimia.visualizeDocument(alquimia.Alquimia)
     elif en == '5':
+        alquimia.Alquimia.deleteDocument(alquimia.Alquimia)
+    elif en == '6':
         exit()
     else:
         print('Opción inváilda')
