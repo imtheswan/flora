@@ -1,81 +1,102 @@
 ### Clase base de cada documento
 
-import string
+from cgitb import text
 
 
-class File():
+class File:
     tittle = ''
 
     lineNumber = 0
+    subLineNumber = 0
     charNumber = 0
-    instructionNumber = 0
-    subinstructionNumber = 0
 
-    lines = [] # lista con todas las instrucciones
-    subLines = [] # diccionario con listas y referencias de numero de instruccion a la que pertenece
-    extraLines = [] # lista de instrucciones extra con diccionarios y listas de referencia
+    lines = {} # dict con todas las instrucciones
+    subLines = []
+    #subLines = [] # diccionario con listas y referencias de numero de instruccion a la que pertenece
+    #extraLines = [] # lista de instrucciones extra con diccionarios y listas de referencia
 
-    def __init__(s, tittle):
+    #def __init__(s, tittle, lineNumber, subLineNumber, charNumber, lines, sublines, extraLines):
+    #    s.tittle = tittle
+    #    s.lineNumber = lineNumber
+    #    s.subLineNumber = subLineNumber
+    #    s.charNumber = charNumber
+    #    s.lines = lines
+    #    s.subLines = sublines
+    #    s.extraLines = extraLines
+
+    def __init__(s, tittle, lineNumber, subLineNumber, charNumber, lines, sublines):
         s.tittle = tittle
-        ...
+        s.lineNumber = lineNumber
+        s.subLineNumber = subLineNumber
+        s.charNumber = charNumber
+        s.lines = lines
+        s.subLines = sublines
     
     def __str__(s): # define como debe imprimirse el archivo
-        texto = ''
-        newLines = [] # diccionario de nuevas lineas
-        jl = 1 # saltos de linea en una linea
-        arras = '' # letras antesde la nueva linea
+        text = ''   
         for line in s.lines:
+            text += f'{line}: {s.lines[line]} \n'
             try:
-                texto = texto[0:-2] + '\n'
+                for sline in s.subLines[line - 1]:
+                    text += f'\t {sline}: {s.subLines[line - 1][sline]} \n'
             except:
                 ...
-            for c in line:
-                arras += c
-                if c == '\n':
-                    arras += '\t'
-            texto += str(jl) + ".\t" + arras
-            arras = ''
-            jl += 1
-        return texto
+        return text
+        ...
 
-    def writeLine(s, ins): ## Recibe la instruccion a añadir
+    def writeLine(s, texto): ## Recibe la instruccion a añadir
         s.lineNumber += 1
-        s.lines.append(ins)
-        ...
-
-    def deleteLine(s, ins):
-        ...
-        
-    #def writeSubLine(s, texto, newlines): ## recibe el indice e instruccion
-    #    i = 0
-    #    for line in s.subLines:
-    #        ind = int(newlines[i])
-    #        s.checkSubLine(ind, texto, line)
-    #        i += 1
-    #
-    #def createSubLine(s, texto, ind, reachLine): #reachLines es una lista con la direccion de la sublinea 2.3.1 = [2,3,1]
-    #    if type(reachLine[ind]) == list:
-    #        ...
-    #    else:
-    #        s.createSubLine(texto, ind + 1, reachLine)
-#
-    #def checkSubLine(s, ind,texto, line):
-    #    if (type(line) == string):
-    #        ...
-    #    elif type(line) == list:
-    #        ...
-    #    if(ind >len(s.subLines)):
-    #            newLine = []
-    #            newLine.append(ins)
-    #            s.subLines.append(newLine)
-    #    else:
-    #        ...
-
-    def deleteSubLine(s):
-        ...
-
-    def insertLine(s):
-        ...
+        newLine = Line(texto)
+        s.lines[s.lineNumber] = newLine
     
-    def insertSubLine(s):
-        ...
+    def writeSubLine(s, ind, text):
+        try:
+            s.subLines[ind][len(s.subLines[ind]) + 1] = Line(text)
+        except:
+            newsub = {1:Line(text)}
+            s.subLines.append(newsub) 
+
+    def deleteLine(s, index):
+        old_dict = {} # para almacenar una copia del diccinario
+
+        for key in s.lines:
+            old_dict[key] = s.lines[key]
+        while index < len(s.lines):
+            s.lines[index] = old_dict[index + 1]
+            index += 1
+
+        del s.lines[index]        
+        del old_dict
+
+    def insertLine(s, index, texto):
+        s.lineNumber += 1
+        old_dict = {} # para almacenar una copia del diccinario
+        for key in s.lines:
+            old_dict[key] = s.lines[key]
+        s.lines[index] = Line(texto)
+        #print('Old dict tiene elemetnos', len(old_dict))
+        while index <= len(s.lines):
+            index += 1
+            try:
+                s.lines[index] = old_dict[index - 1]
+            except:
+                ...
+
+
+class Line:
+    
+    text = ''
+    #slNummber = 0 # numero de sublineas
+    #subLines = {} # {direccion o numero de sublinea: Objeto linea}
+    
+    def __init__(s, text) -> None:
+        s.text = text
+
+    def __str__(s) -> str:
+        return str(s.text)
+    
+    #def addSubLine(s, text):
+    #    s.slNummber += 1
+    #    newSubLine = Line(text)
+    #    s.subLines[s.slNummber] = newSubLine
+
